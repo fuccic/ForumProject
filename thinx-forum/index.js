@@ -112,7 +112,29 @@ app.post('/users/login', function(req, res){
   });
 });
 
-
+app.post('/user/post', function(req, res){
+  var title = req.body.title;
+  console.log("this is the title" + title);
+  var content = req.body.content;
+  console.log(content);
+  var currentUser = req.cookies.loggedinId;
+  var post2 = new Posts({
+    title: title,
+    content: content
+  });
+  User.findOne({'_id' : currentUser}).exec(function(err, user){
+    console.log("========" + user);
+    user.posts.push(post2);
+    user.save(function(err) {
+        if(err) {
+          console.log(err);
+        } else {
+          res.send(user)
+        }
+    })
+    console.log(post2);
+  });
+});
 
 // app.get('/seed', function(req, res){
 //   var user = new User({

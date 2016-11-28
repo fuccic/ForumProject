@@ -1,0 +1,26 @@
+body{
+	background-color: grey;
+}
+
+.btn-default{
+  background-color: BurlyWood;
+  /*margin: 2%;*/
+  font-family: 'Raleway', sans-serif;
+}
+
+.centered {
+  text-align: center;
+  display: block;
+  margin:0 auto;
+}
+
+.alert{
+  width: 25%;
+  height: 5%;
+  margin-top: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 3%;
+  text-align: center;
+  display: none;
+}
