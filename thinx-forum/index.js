@@ -8,6 +8,7 @@ var express = require('express'),
     morgan = require('morgan'),
     md5 = require('md5'),
     cookieParser = require('cookie-parser');
+    moment = require('moment');
 
 var port = process.env.PORT || 3000;
 var app = express();
@@ -52,6 +53,31 @@ app.get('/users', function(req, res){
   });
 });
 
+app.get('/users/posts', function(req, res){
+  var currentUser = req.cookies.loggedinId;
+  var postList = [];
+  User.findOne({'_id' : currentUser}, 'posts', function(err, user){
+    for(var i = 0; i<user.posts.length; i++){
+      var currentPostTitle = user.posts[i].title;
+      console.log(currentPostTitle);
+      postList.push(currentPostTitle);
+    };
+  res.send(postList);
+  });
+});
+
+app.get('/users/allPosts', function(req, res){
+  var postList = [];
+  User.find().then(function(user){
+    for (var i = 0; i < user.length; i++) {
+        var goobs = user[i].posts
+        for (var e = 0; e < goobs.length; e++) {
+          postList.push(goobs[e].title);
+        };
+    };
+    res.send(postList);
+  });
+});
 
 
 // POST requet used by createUser and userShow functions in app.js. Creates a user. 
@@ -135,6 +161,7 @@ app.post('/user/post', function(req, res){
     console.log(post2);
   });
 });
+
 
 // app.get('/seed', function(req, res){
 //   var user = new User({

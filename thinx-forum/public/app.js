@@ -9,6 +9,8 @@ var $closeButton = $('#close-button');
 var $usernameAlert = $('.alert');
 console.log($usernameAlert);
 
+var $postButton = $('#create-post');
+
 // var $nameInput = $('#name-input');
 // // console.log($nameInput);
 // var $usernameAlert = $('.alert');
@@ -97,7 +99,7 @@ var userShow = function(data){
 	user = Cookies.get('loggedinId');
 	// setTimeout(initMap, 2000);
 	$usernameAlert.hide();
-	// console.log(map)
+	getPosts();
 };
 
 // shows user sign in field, on click it runs sign in submit
@@ -137,6 +139,8 @@ var signinSubmit = function(){
 	});
 };
 
+
+
 var $logoutButton = $('#logout');
 // logs user out on click
 $logoutButton.click(function(){
@@ -145,6 +149,10 @@ $logoutButton.click(function(){
 	$('#user-page').toggle();
 	showSplashPage();
 });
+
+$postButton.click(function(){
+	createPost();
+})
 
 var createPost = function(){
 	var title = $('#title-holder').val();
@@ -160,4 +168,34 @@ var createPost = function(){
 		method: "POST",
 		data: postData
 	}).done();
+};
+
+var getPostsCurrentUser = function(){
+	$.ajax({
+		url: 'http://localhost:3000/users/posts',
+		method: 'GET',
+		dataType: 'json'
+	}).done(populatePostsCurrentUser);
+};
+
+var populatePostsCurrentUser = function(data){
+	console.log(data);
+	for (var i = 0; i < data.length; i++) {
+		console.log(data[i]);
+	};
+};
+
+var getPosts = function(){
+	$.ajax({
+		url: 'http://localhost:3000/users/allposts',
+		method: 'GET',
+		dataType: 'json'
+	}).done(populatePosts);
+};
+
+var populatePosts= function(data){
+	console.log(data);
+	for (var i = 0; i < data.length; i++) {
+		$("#posts-holder").append("<div id='poster'>" + data[i] + "</br>");
+	};
 };

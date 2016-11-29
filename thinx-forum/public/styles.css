@@ -24,3 +24,13 @@ body{
   text-align: center;
   display: none;
 }
+
+.modal{
+    z-index: 20; 
+    top:10%;
+    left:40%;
+    outline: none; 
+}
+.modal-backdrop{
+    z-index: 10;        
+}​
