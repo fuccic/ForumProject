@@ -27,9 +27,9 @@
 						</div>
 					</div>
 				</nav>
+
 				<div class="col-xs-6 col-md-4"></div>
-				<div class="col-xs-6 col-md-4">
-						<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Create Post</button>
+				<div id="posts-holder" class="col-xs-6 col-md-4">
 						<div class="modal fade" id="myModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 				      <div class="modal-dialog modal-sm" role="document">
 				        <div class="modal-content">
@@ -48,12 +48,12 @@
 				      </div>
 				    </div>
 				</div>
-				<div class="col-xs-6 col-md-4"></div>
-			</div>
-			<div class="row">
-					<div class="col-xs-6 col-md-4"></div>
-					<div id="posts-holder"class="col-xs-6 col-md-4"></div>
-					<div class="col-xs-6 col-md-4"></div>
+				<div class="col-xs-6 col-md-4">
+
+					<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">Create Post</button>
+					<button type="button" class="btn btn-default btn-sm" id="all-posts-butt">Home</button>
+					<button type="button" class="btn btn-default btn-sm" id="user-posts-butt">Profile</button>
+				</div>
 			</div>
 			<div class="row full" id="front-page">
 				<div class="col-md-12 centered">

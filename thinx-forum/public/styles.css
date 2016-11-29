@@ -34,3 +34,15 @@ body{
 .modal-backdrop{
     z-index: 10;        
 }​
+
+#nothing{
+ }
+
+.posters{
+	text-align: center;
+	margin: 1em;
+}
+
+.posters:hover{
+	color: burlywood;
+}

@@ -56,11 +56,15 @@ app.get('/users', function(req, res){
 app.get('/users/posts', function(req, res){
   var currentUser = req.cookies.loggedinId;
   var postList = [];
+  var timeList = [];
   User.findOne({'_id' : currentUser}, 'posts', function(err, user){
     for(var i = 0; i<user.posts.length; i++){
-      var currentPostTitle = user.posts[i].title;
-      console.log(currentPostTitle);
-      postList.push(currentPostTitle);
+      var postTitle = user.posts[i].title;
+      var postTime = user.posts[i].created_at;
+      var postContent = user.posts[i].content;
+      postList.push(postContent);
+      postList.push(postTitle);
+      postList.push(postTime);
     };
   res.send(postList);
   });
@@ -70,14 +74,30 @@ app.get('/users/allPosts', function(req, res){
   var postList = [];
   User.find().then(function(user){
     for (var i = 0; i < user.length; i++) {
-        var goobs = user[i].posts
-        for (var e = 0; e < goobs.length; e++) {
-          postList.push(goobs[e].title);
-        };
+      var content = user[i].posts
+      for (var e = 0; e < content.length; e++) {
+        postList.push(content[e].content);
+        postList.push(content[e].title);
+        postList.push(content[e].created_at);
+      };
     };
+    console.log(postList.length);
     res.send(postList);
   });
 });
+
+app.get('/users/content', function(req, res){
+  var postList = [];
+  User.find().then(function(user){
+    for (var i = 0; i < user.length; i++) {
+        var content = user[i].posts
+      for (var e = 0; e < content.length; e++) {
+        postList.push(content[e].content);
+      };
+    };
+    res.send(postList);
+  });
+})
 
 
 // POST requet used by createUser and userShow functions in app.js. Creates a user. 
@@ -163,25 +183,7 @@ app.post('/user/post', function(req, res){
 });
 
 
-// app.get('/seed', function(req, res){
-//   var user = new User({
-//     password_hash: "hello",
-//     username: "timmy"
-//   });
 
-//   user.save(function(err) {
-//     if (err){
-//       console.log(err);
-//       res.statusCode = 503;
-//     }else{
-//       console.log(user.username + ' created!');
-//       //set the cookie!
-//       res.cookie("loggedinId", user.id);
-//       res.send(user);
-//       console.log('user id: ', user.id);
-//     };  
-//   });
-// });
 
 
 

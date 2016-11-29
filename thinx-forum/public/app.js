@@ -7,7 +7,6 @@ var user = null;
 var $closeButton = $('#close-button');
 
 var $usernameAlert = $('.alert');
-console.log($usernameAlert);
 
 var $postButton = $('#create-post');
 
@@ -139,7 +138,17 @@ var signinSubmit = function(){
 	});
 };
 
+var $userButt = $('#user-posts-butt');
+$userButt.click(function(){
+	$('#posts-holder').empty();
+	getPostsCurrentUser();
+});
 
+var $allButt = $('#all-posts-butt');
+$allButt.click(function(){
+	$('#posts-holder').empty();
+	getPosts();
+})
 
 var $logoutButton = $('#logout');
 // logs user out on click
@@ -148,6 +157,7 @@ $logoutButton.click(function(){
 	$('#front-page').show();
 	$('#user-page').toggle();
 	showSplashPage();
+	location.reload();
 });
 
 $postButton.click(function(){
@@ -179,9 +189,9 @@ var getPostsCurrentUser = function(){
 };
 
 var populatePostsCurrentUser = function(data){
-	console.log(data);
-	for (var i = 0; i < data.length; i++) {
-		console.log(data[i]);
+	for (var i = data.length-1; i >= 0; i-=3) {
+		var date = data[i].slice(5,10);
+		$("#posts-holder").append("<div class='posters'>" + date + "</br>" + data[i-1] + "</br>" + data[i-2] + "</br>");
 	};
 };
 
@@ -194,8 +204,34 @@ var getPosts = function(){
 };
 
 var populatePosts= function(data){
-	console.log(data);
-	for (var i = 0; i < data.length; i++) {
-		$("#posts-holder").append("<div id='poster'>" + data[i] + "</br>");
+	for (var i = data.length-1; i >= 0; i-=3) {
+		var date = data[i].slice(5,10);
+		$("#posts-holder").append('<div id="div'+ i +'" / class="posters">' + date + "</br>" + data[i-1] + "</br>" + data[i-2] + "</br>");
 	};
 };
+
+var getContent = function(){
+	$.ajax({
+		url: 'http://localhost:3000/users/content',
+		method: 'GET',
+		dataType: 'json'
+	}).done(viewContent);
+};
+
+var viewContent = function(data){
+	for (var i = data.length-1; i >= 0; i--) {
+		$("#posts-holder").append("<div class='posters'>" + data[i] + "</br>" );
+	};
+};
+
+
+
+
+
+
+
+
+
+
+
+
