@@ -43,7 +43,7 @@ var Comments = require('./models/comments');
 app.listen(port);
 
 // =============
-// ROUTES
+// GET REQUESTS
 // =============
 
 // GET route to show all users in Json
@@ -56,12 +56,14 @@ app.get('/users', function(req, res){
 app.get('/users/posts', function(req, res){
   var currentUser = req.cookies.loggedinId;
   var postList = [];
-  var timeList = [];
   User.findOne({'_id' : currentUser}, 'posts', function(err, user){
+    var username = user.username;
     for(var i = 0; i<user.posts.length; i++){
       var postTitle = user.posts[i].title;
       var postTime = user.posts[i].created_at;
       var postContent = user.posts[i].content;
+      var postId = user.posts[i]._id;
+      postList.push(postId);
       postList.push(postContent);
       postList.push(postTitle);
       postList.push(postTime);
@@ -74,8 +76,10 @@ app.get('/users/allPosts', function(req, res){
   var postList = [];
   User.find().then(function(user){
     for (var i = 0; i < user.length; i++) {
-      var content = user[i].posts
+      var content = user[i].posts;
+      var username = user[i].username;
       for (var e = 0; e < content.length; e++) {
+        postList.push(content[e]._id);
         postList.push(content[e].content);
         postList.push(content[e].title);
         postList.push(content[e].created_at);
@@ -97,8 +101,66 @@ app.get('/users/content', function(req, res){
     };
     res.send(postList);
   });
-})
+});
 
+app.get('/users/onepost', function(req, res){
+  var postList = [];
+  User.find().then(function(user){
+    for (var i = user.length-1; i >= 0; i--) {
+      var content = user[i].posts;
+      var username = user[i].username;
+      var userId = user[i]._id;
+      for (var e = content.length-1; e >= 0; e--) {
+        var singlePost = {
+        userId: userId,
+        postId: content[e]._id,
+        content: content[e].content,
+        title: content[e].title,
+        date: content[e].created_at};
+        postList.push(singlePost);
+      };
+    };
+    res.send(postList);
+  });
+});
+
+app.get('/post/comments', function(req, res){
+  var commentList = [];
+  User.find().then(function(user){
+    for (var i = user.length-1; i >= 0; i--) {
+      var content = user[i].posts;
+      for (var e = content.length-1; e >= 0; e--) {
+        // console.log(content[e]._id);
+        // console.log(content[e].created_at);
+        // console.log(content[e].creator);
+        // console.log(content[e].content);
+        // console.log(content[e].title);
+
+        var id = content[e]._id;
+        var date = content[e].created_at;
+        var creator = content[e].creator;
+        var content2 = content[e].content;
+        var comments = content[e].comments;
+        var title = content [e].title;
+        var singlePost = {
+          comments: comments,
+          created_at: date,
+          creator: creator,
+          title: title,
+          content: content,
+          _id: id
+          };
+      // console.log(content);
+        commentList.push(singlePost);
+      };
+    };
+    res.send(commentList);
+  });
+});
+ 
+// =============
+// POST REQUESTS
+// =============
 
 // POST requet used by createUser and userShow functions in app.js. Creates a user. 
 app.post('/users', function(req, res){
@@ -135,8 +197,6 @@ app.post('/users', function(req, res){
   });
 });
 
-
-
 // POST request used by signinSubmit and userShow functions in app.js. Allows a user to log in. 
 app.post('/users/login', function(req, res){
   // console.log(req.body.username);
@@ -160,11 +220,13 @@ app.post('/users/login', function(req, res){
 
 app.post('/user/post', function(req, res){
   var title = req.body.title;
-  console.log("this is the title" + title);
+  // console.log("this is the title" + title);
   var content = req.body.content;
   console.log(content);
   var currentUser = req.cookies.loggedinId;
   var post2 = new Posts({
+    // postNumber: 
+    creator: currentUser,
     title: title,
     content: content
   });
@@ -182,6 +244,33 @@ app.post('/user/post', function(req, res){
   });
 });
 
+app.post('/post/comment', function(req, res){
+  var content = req.body.content;
+  var currentUser = req.cookies.loggedinId;
+  var postId = req.body.username;
+  var postPosition = req.body.postPosition; 
+  console.log(postPosition);
+  var comment2 = new Comments({
+    postId: postId,
+    creator: currentUser,
+    content: content
+  });
+  User.findOne({'_id' : postId}).exec(function(err, user){
+    user.posts[postPosition].comments.push(comment2);
+    user.save(function(err) {
+        if(err) {
+          console.log(err);
+        } else {
+          res.send(user)
+        }
+    })
+    console.log(comment2);
+  });
+});
+
+// app.post('/comment/thread', function(req,res){
+
+// });
 
 
 

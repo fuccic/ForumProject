@@ -10,6 +10,10 @@ var $usernameAlert = $('.alert');
 
 var $postButton = $('#create-post');
 
+var $commentButton = $('#create-comment');
+
+var $postHolder = $('#posts-holder');
+
 // var $nameInput = $('#name-input');
 // // console.log($nameInput);
 // var $usernameAlert = $('.alert');
@@ -140,15 +144,30 @@ var signinSubmit = function(){
 
 var $userButt = $('#user-posts-butt');
 $userButt.click(function(){
-	$('#posts-holder').empty();
+	$('.posters').remove();
+	$('#comment-box').remove();
+	$('#commentModal').remove();
+	$('.single-post').remove();
 	getPostsCurrentUser();
 });
 
 var $allButt = $('#all-posts-butt');
 $allButt.click(function(){
-	$('#posts-holder').empty();
+	$('.posters').remove();
+	$('#comment-box').remove();
+	$('#commentModal').remove();
+	$('.single-post').remove();
 	getPosts();
 })
+
+var $homeButton = $('#logo');
+$homeButton.click(function(){
+	$('.posters').remove();
+	$('#comment-box').remove();
+	$('#commentModal').remove();
+	$('.single-post').remove();
+	getPosts();
+});
 
 var $logoutButton = $('#logout');
 // logs user out on click
@@ -162,7 +181,12 @@ $logoutButton.click(function(){
 
 $postButton.click(function(){
 	createPost();
-})
+	// getPosts();
+});
+
+$commentButton.click(function(){
+	createComment();
+});
 
 var createPost = function(){
 	var title = $('#title-holder').val();
@@ -189,9 +213,56 @@ var getPostsCurrentUser = function(){
 };
 
 var populatePostsCurrentUser = function(data){
-	for (var i = data.length-1; i >= 0; i-=3) {
+	var counter = 0;
+	// console.log(data);
+	for (var i = data.length-1; i >= 0; i-=4) {
+		counter++;
 		var date = data[i].slice(5,10);
-		$("#posts-holder").append("<div class='posters'>" + date + "</br>" + data[i-1] + "</br>" + data[i-2] + "</br>");
+		$("#posts-holder").append('<div id="'+ (counter - 1) +'" / class="posters">' + date + "</br>" +  "<h2>" + data[i-1] + "</h2>" + "</br>" + data[i-2] + "</br>");
+		$("#" + (counter - 1)).click(function(){
+			$('.posters').remove();
+			$('#comment-box').remove();
+			$('#commentModal').remove();
+			$('.single-post').remove();
+			var id = $(this).attr('id');
+			var getContent = function(){
+				$.ajax({
+					url: 'http://localhost:3000/users/onepost',
+					method: 'GET',
+					dataType: 'json',
+				}).done(viewContent);
+			};
+			var viewContent = function(data){
+				var date = data[id].date;
+				var userId = data[id].userId;
+				var dateFixed = date.slice(5,10);
+				$("#posts-holder").append('<div id="'+ id +'" / class="posters" data-userId="'+ userId +'">' + dateFixed + "</br>" + "<h2>" + data[id].title + "</h2>" + "</br>" + data[id].content + "</br>");
+				$("#posts-holder").append('</br>' + '<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal2" id="commentModal">Create Comment');
+			};
+			var getComments = function(){
+				$.ajax({
+					url: 'http://localhost:3000/post/comments',
+					method: 'GET',
+					dataType: 'json'
+				}).done(populateComments);
+			};
+			var populateComments = function(data){
+				console.log(data);
+				var post = data[id];
+				var comments = post.comments;
+				console.log(comments);
+				for (var i = 0; i < comments.length; i++) {
+					var chosenComment = comments[i];
+					var content = chosenComment.content;
+					var date = chosenComment.created_at;
+					var userId = chosenComment.creator;
+					var dateFixed = date.slice(5,10);
+					$("#posts-holder").append('<div id="'+ id +'" / class="single-post" data-userId="'+ userId +'">' + dateFixed + "</br>" + content + "</br>");
+				};
+			};
+			getContent();
+			getComments();
+		});
 	};
 };
 
@@ -204,30 +275,79 @@ var getPosts = function(){
 };
 
 var populatePosts= function(data){
-	for (var i = data.length-1; i >= 0; i-=3) {
+	var counter = 0;
+	for (var i = data.length-1; i >= 0; i-=4) {
+		counter++;
 		var date = data[i].slice(5,10);
-		$("#posts-holder").append('<div id="div'+ i +'" / class="posters">' + date + "</br>" + data[i-1] + "</br>" + data[i-2] + "</br>");
+		$("#posts-holder").append('<div id="'+ (counter -1) +'" / class="posters">' + date + "</br>" +  "<h2>" + data[i-1] + "</h2>" + "</br>" + data[i-2] + "</br>");
+		$("#" + (counter - 1)).click(function(){
+			$('.posters').remove();
+			$('#comment-box').remove();
+			$('#commentModal').remove();
+			$('.single-post').remove();
+			var id = $(this).attr('id');
+			var getContent = function(){
+				$.ajax({
+					url: 'http://localhost:3000/users/onepost',
+					method: 'GET',
+					dataType: 'json',
+				}).done(viewContent);
+			};
+			var viewContent = function(data){
+				var date = data[id].date;
+				var userId = data[id].userId;
+				var dateFixed = date.slice(5,10);
+				$("#posts-holder").append('<div id="'+ id +'" / class="single-post" data-userId="'+ userId +'">' + dateFixed + "</br>" + "<h2>"+data[id].title + "</h2>" + "</br>" + data[id].content + "</br>");
+				$("#posts-holder").append("</br>" + '<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal2" id="commentModal">Create Comment');
+			};
+			var getComments = function(){
+				$.ajax({
+					url: 'http://localhost:3000/post/comments',
+					method: 'GET',
+					dataType: 'json'
+				}).done(populateComments);
+			};
+			var populateComments = function(data){
+				console.log(data);
+				var post = data[id];
+				var comments = post.comments;
+				console.log(comments);
+				for (var i = 0; i < comments.length; i++) {
+					var chosenComment = comments[i];
+					var content = chosenComment.content;
+					var date = chosenComment.created_at;
+					var userId = chosenComment.creator;
+					var dateFixed = date.slice(5,10);
+					$("#posts-holder").append('<div id="'+ id +'" / class="single-post" data-userId="'+ userId +'">' + dateFixed + "</br>" + content + "</br>");
+				};
+			};
+			getContent();
+			getComments();
+		});
 	};
 };
 
-var getContent = function(){
+var createComment = function(){
+	var content = $('#comment-holder').val();
+	var postUserId = $('.single-post').attr("data-userId");
+	var postPosition = $('.single-post').attr("id");
+	console.log(postPosition);
+	console.log(content);
+	var postData = {
+		username: postUserId,
+		content: content,
+		postPosition: postPosition
+	};
 	$.ajax({
-		url: 'http://localhost:3000/users/content',
-		method: 'GET',
-		dataType: 'json'
-	}).done(viewContent);
-};
-
-var viewContent = function(data){
-	for (var i = data.length-1; i >= 0; i--) {
-		$("#posts-holder").append("<div class='posters'>" + data[i] + "</br>" );
-	};
+		url: "http://localhost:3000/post/comment",
+		method: "POST",
+		data: postData
+	}).done();
 };
 
 
 
-
-
+// $('#')
 
 
 

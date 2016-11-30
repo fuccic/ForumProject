@@ -3,9 +3,10 @@ var CommentSchema = require('./comments').schema;
 var UserSchema = require('./user').schema;
 
 var PostsSchema = new mongoose.Schema({
-	_creator : { type: Number, ref: 'User' },
+	creator : String,
 	title: String,
 	content: String,
+	postNumber: Number,
 	comments: [CommentSchema],
 	created_at: { type: Date, default: Date.now}
 });

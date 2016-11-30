@@ -5,8 +5,9 @@ var PostsSchema = require('./posts').schema;
 
 var CommentSchema = new mongoose.Schema({
 	content: String,
-	user_id: String,
-	_post : { type: Number, ref: 'Posts' },
+	creator: String,
+	postId: String,
+	relatedComments: [],
 	created_at: { type: Date, default: Date.now}
 });
 

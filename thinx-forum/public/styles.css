@@ -46,3 +46,24 @@ body{
 .posters:hover{
 	color: burlywood;
 }
+
+h2{
+	margin-top: .2em;
+	margin-bottom: .2em;
+}
+
+#comment-box{
+	margin: 0 auto;
+}
+
+.single-post{
+	text-align: center;
+}
+
+.navbar{
+	background-color: white;
+}
+
+a{
+	color: burlywood;
+}
