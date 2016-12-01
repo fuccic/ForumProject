@@ -249,7 +249,7 @@ var populatePostsCurrentUser = function(data){
 			var populateComments = function(data){
 				var currentPost = $('#' + id).attr('data-postId');
 				// console.log(currentPost);
-				// console.log(data);
+				console.log(data);
 				// var post = data[id];
 				// var comments = post.comments;
 				// console.log(comments);
@@ -302,7 +302,7 @@ var populatePosts= function(data){
 				}).done(viewContent);
 			};
 			var viewContent = function(data){
-				console.log(data);
+				// console.log(data);
 				var date = data[id].date;
 				var userId = data[id].userId;
 				var postId = data[id].postId;
@@ -320,15 +320,16 @@ var populatePosts= function(data){
 			var populateComments = function(data){
 				var currentPost = $('#' + id).attr('data-postId');
 				// console.log(currentPost);
-				// console.log(data);
+				console.log(data);
 				// var post = data[id];
 				// var comments = post.comments;
 				// console.log(comments);
 				for (var i = 0; i < data.length; i++) {
 					var commentMatch = data[i].postId;
 					// console.log(commentMatch);
-					if (currentPost === commentMatch) {
-				// 	var chosenComment = comments[i];
+					if (currentPost == commentMatch) {
+					// var chosenComment = comments[i];
+					console.log(i + "comment check");
 					var content = data[i].content;
 					var date = data[i].created_at;
 					var userId = data[i].creator;
@@ -336,6 +337,7 @@ var populatePosts= function(data){
 						$("#posts-holder").append('<div id="'+ id +'" / class="single-post" data-userId="'+ userId +'">' + dateFixed + "</br>" + content + "</br>");
 					}else{
 						console.log("nope");
+						console.log(i + "comment check");
 					}
 				};
 			};
@@ -350,8 +352,8 @@ var createComment = function(){
 	var postUserId = $('.single-post').attr("data-userId");
 	var postPostId = $('.single-post').attr("data-postId");
 	var postPosition = $('.single-post').attr("id");
-	console.log(postPosition);
-	console.log(content);
+	// console.log(postPosition);
+	// console.log(content);
 	var postData = {
 		username: postUserId,
 		username2: postPostId,

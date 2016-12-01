@@ -133,30 +133,38 @@ app.get('/post/comments', function(req, res){
       // console.log("THIS IS ONE USER THING" + user[0]);
       // console.log("THIS IS ONE USER THING" + user[1]);
       // console.log(i);
+      console.log("RUNNING ONCE" + user.length);
       var frogs = user[i].posts;
       // console.log(frogs);
       // console.log(frogs.length);
       for (var e = frogs.length-1; e >= 0; e--) {
         // console.log(e);
         var cats = frogs[e].comments;
-        var pigs = cats[0];
-        // console.log(pigs);
+        // console.log(cats);
+        console.log("===========");
+        console.log("RUNNING SECOND PART " + frogs.length);
+        for (var x = 0; x < cats.length; x++) {
+          var pigs = cats[x];
+          // console.log(pigs);
 
-        if (pigs === undefined) {
-          // console.log("nope");
-          commentList.push("No Comments");
-          // console.log(commentList);
-        }else{
-          // console.log("cool");
-          commentList.push(pigs);
-          console.log(commentList);
+          if (pigs === undefined) {
+            // console.log("nope");
+            commentList.push("No Comments");
+            // console.log(commentList);
+          }else{
+            // console.log("cool");
+            commentList.push(pigs);
+          };
+        
         };
       };
     };
+    console.log(commentList);
     res.send(commentList);
   });
 });
  
+
 // =============
 // POST REQUESTS
 // =============
@@ -256,15 +264,32 @@ app.post('/post/comment', function(req, res){
     content: content
   });
   User.findOne({'_id' : postId}).exec(function(err, user){
-    user.posts[postPosition].comments.push(comment2);
-    user.save(function(err) {
-        if(err) {
-          console.log(err);
-        } else {
-          res.send(user)
-        }
-    })
-    console.log(comment2);
+    // console.log(user);
+    // user.posts[postPosition].comments.push(comment2);
+    var postList = user.posts;
+    // console.log(postList);
+    for (var i = 0; i < postList.length; i++) {
+      // console.log(postList[i]._id);
+      // console.log("=========")
+      // console.log(userId);
+      var matcher = postList[i]._id;
+      // console.log(postId);
+      if (matcher == userId) {
+        console.log("matched");
+        postList[i].comments.push(comment2);
+        user.save(function(err) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("saved and shit")
+            res.send(user)
+          }
+        })
+        console.log(comment2);
+      }else{
+        console.log("no match");
+      };
+    };
   });
 });
 
