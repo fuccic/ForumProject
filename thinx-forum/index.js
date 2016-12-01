@@ -127,31 +127,30 @@ app.get('/users/onepost', function(req, res){
 app.get('/post/comments', function(req, res){
   var commentList = [];
   User.find().then(function(user){
-    for (var i = user.length-1; i >= 0; i--) {
-      var content = user[i].posts;
-      for (var e = content.length-1; e >= 0; e--) {
-        // console.log(content[e]._id);
-        // console.log(content[e].created_at);
-        // console.log(content[e].creator);
-        // console.log(content[e].content);
-        // console.log(content[e].title);
+    // console.log(user);
+    // console.log(user.length);
+    for (var i = 0; i < user.length; i++) {
+      // console.log("THIS IS ONE USER THING" + user[0]);
+      // console.log("THIS IS ONE USER THING" + user[1]);
+      // console.log(i);
+      var frogs = user[i].posts;
+      // console.log(frogs);
+      // console.log(frogs.length);
+      for (var e = frogs.length-1; e >= 0; e--) {
+        // console.log(e);
+        var cats = frogs[e].comments;
+        var pigs = cats[0];
+        // console.log(pigs);
 
-        var id = content[e]._id;
-        var date = content[e].created_at;
-        var creator = content[e].creator;
-        var content2 = content[e].content;
-        var comments = content[e].comments;
-        var title = content [e].title;
-        var singlePost = {
-          comments: comments,
-          created_at: date,
-          creator: creator,
-          title: title,
-          content: content,
-          _id: id
-          };
-      // console.log(content);
-        commentList.push(singlePost);
+        if (pigs === undefined) {
+          // console.log("nope");
+          commentList.push("No Comments");
+          // console.log(commentList);
+        }else{
+          // console.log("cool");
+          commentList.push(pigs);
+          console.log(commentList);
+        };
       };
     };
     res.send(commentList);
@@ -248,10 +247,11 @@ app.post('/post/comment', function(req, res){
   var content = req.body.content;
   var currentUser = req.cookies.loggedinId;
   var postId = req.body.username;
+  var userId = req.body.username2;
   var postPosition = req.body.postPosition; 
   console.log(postPosition);
   var comment2 = new Comments({
-    postId: postId,
+    postId: userId,
     creator: currentUser,
     content: content
   });

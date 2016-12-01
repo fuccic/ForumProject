@@ -218,7 +218,7 @@ var populatePostsCurrentUser = function(data){
 	for (var i = data.length-1; i >= 0; i-=4) {
 		counter++;
 		var date = data[i].slice(5,10);
-		$("#posts-holder").append('<div id="'+ (counter - 1) +'" / class="posters">' + date + "</br>" +  "<h2>" + data[i-1] + "</h2>" + "</br>" + data[i-2] + "</br>");
+		$("#posts-holder").append('<div id="'+ (counter - 1) +'" / class="posters">' + date + "</br>" +  "<h2>" + data[i-1] + "</h2>" + "</br>" + "<p>" + data[i-2] + "</p>" +"</br>");
 		$("#" + (counter - 1)).click(function(){
 			$('.posters').remove();
 			$('#comment-box').remove();
@@ -236,8 +236,8 @@ var populatePostsCurrentUser = function(data){
 				var date = data[id].date;
 				var userId = data[id].userId;
 				var dateFixed = date.slice(5,10);
-				$("#posts-holder").append('<div id="'+ id +'" / class="posters" data-userId="'+ userId +'">' + dateFixed + "</br>" + "<h2>" + data[id].title + "</h2>" + "</br>" + data[id].content + "</br>");
-				$("#posts-holder").append('</br>' + '<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal2" id="commentModal">Create Comment');
+				$("#posts-holder").append('<div id="'+ id +'" / class="posters" data-userId="'+ userId +'">' + dateFixed + "</br>" + "<h2>" + data[id].title + "</h2>" + "</br>" + "<p>" + data[id].content + "</p>" + "</br>");
+				$("#commentbutton-holder").append('</br>' + '<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal2" id="commentModal">Create Comment');
 			};
 			var getComments = function(){
 				$.ajax({
@@ -247,17 +247,25 @@ var populatePostsCurrentUser = function(data){
 				}).done(populateComments);
 			};
 			var populateComments = function(data){
-				console.log(data);
-				var post = data[id];
-				var comments = post.comments;
-				console.log(comments);
-				for (var i = 0; i < comments.length; i++) {
-					var chosenComment = comments[i];
-					var content = chosenComment.content;
-					var date = chosenComment.created_at;
-					var userId = chosenComment.creator;
+				var currentPost = $('#' + id).attr('data-postId');
+				// console.log(currentPost);
+				// console.log(data);
+				// var post = data[id];
+				// var comments = post.comments;
+				// console.log(comments);
+				for (var i = 0; i < data.length; i++) {
+					var commentMatch = data[i].postId;
+					// console.log(commentMatch);
+					if (currentPost === commentMatch) {
+				// 	var chosenComment = comments[i];
+					var content = data[i].content;
+					var date = data[i].created_at;
+					var userId = data[i].creator;
 					var dateFixed = date.slice(5,10);
-					$("#posts-holder").append('<div id="'+ id +'" / class="single-post" data-userId="'+ userId +'">' + dateFixed + "</br>" + content + "</br>");
+						$("#posts-holder").append('<div id="'+ id +'" / class="single-post" data-userId="'+ userId +'">' + dateFixed + "</br>" + content + "</br>");
+					}else{
+						console.log("nope");
+					}
 				};
 			};
 			getContent();
@@ -279,7 +287,7 @@ var populatePosts= function(data){
 	for (var i = data.length-1; i >= 0; i-=4) {
 		counter++;
 		var date = data[i].slice(5,10);
-		$("#posts-holder").append('<div id="'+ (counter -1) +'" / class="posters">' + date + "</br>" +  "<h2>" + data[i-1] + "</h2>" + "</br>" + data[i-2] + "</br>");
+		$("#posts-holder").append('<div id="'+ (counter -1) +'" / class="posters">' + date + "</br>" +  "<h2>" + data[i-1] + "</h2>" + "</br>" + "<p>" + data[i-2] + "</p>" + "</br>");
 		$("#" + (counter - 1)).click(function(){
 			$('.posters').remove();
 			$('#comment-box').remove();
@@ -294,11 +302,13 @@ var populatePosts= function(data){
 				}).done(viewContent);
 			};
 			var viewContent = function(data){
+				console.log(data);
 				var date = data[id].date;
 				var userId = data[id].userId;
+				var postId = data[id].postId;
 				var dateFixed = date.slice(5,10);
-				$("#posts-holder").append('<div id="'+ id +'" / class="single-post" data-userId="'+ userId +'">' + dateFixed + "</br>" + "<h2>"+data[id].title + "</h2>" + "</br>" + data[id].content + "</br>");
-				$("#posts-holder").append("</br>" + '<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal2" id="commentModal">Create Comment');
+				$("#posts-holder").append('<div id="'+ id +'" / class="single-post" data-userId="'+ userId +'" data-postId="' + postId +'">' + dateFixed + "</br>" + "<h2>"+data[id].title + "</h2>" + "</br>" + "<p>" + data[id].content + "</p>" + "</br>");
+				$("#commentbutton-holder").append("</br>" + '<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal2" id="commentModal">Create Comment');
 			};
 			var getComments = function(){
 				$.ajax({
@@ -308,17 +318,25 @@ var populatePosts= function(data){
 				}).done(populateComments);
 			};
 			var populateComments = function(data){
-				console.log(data);
-				var post = data[id];
-				var comments = post.comments;
-				console.log(comments);
-				for (var i = 0; i < comments.length; i++) {
-					var chosenComment = comments[i];
-					var content = chosenComment.content;
-					var date = chosenComment.created_at;
-					var userId = chosenComment.creator;
+				var currentPost = $('#' + id).attr('data-postId');
+				// console.log(currentPost);
+				// console.log(data);
+				// var post = data[id];
+				// var comments = post.comments;
+				// console.log(comments);
+				for (var i = 0; i < data.length; i++) {
+					var commentMatch = data[i].postId;
+					// console.log(commentMatch);
+					if (currentPost === commentMatch) {
+				// 	var chosenComment = comments[i];
+					var content = data[i].content;
+					var date = data[i].created_at;
+					var userId = data[i].creator;
 					var dateFixed = date.slice(5,10);
-					$("#posts-holder").append('<div id="'+ id +'" / class="single-post" data-userId="'+ userId +'">' + dateFixed + "</br>" + content + "</br>");
+						$("#posts-holder").append('<div id="'+ id +'" / class="single-post" data-userId="'+ userId +'">' + dateFixed + "</br>" + content + "</br>");
+					}else{
+						console.log("nope");
+					}
 				};
 			};
 			getContent();
@@ -330,11 +348,13 @@ var populatePosts= function(data){
 var createComment = function(){
 	var content = $('#comment-holder').val();
 	var postUserId = $('.single-post').attr("data-userId");
+	var postPostId = $('.single-post').attr("data-postId");
 	var postPosition = $('.single-post').attr("id");
 	console.log(postPosition);
 	console.log(content);
 	var postData = {
 		username: postUserId,
+		username2: postPostId,
 		content: content,
 		postPosition: postPosition
 	};
@@ -347,7 +367,7 @@ var createComment = function(){
 
 
 
-// $('#')
+
 
 
 
